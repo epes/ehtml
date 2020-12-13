@@ -49,6 +49,29 @@ func FindNested(root *html.Node, fns []FindTestFn) []*html.Node {
 	return q.Slice()
 }
 
+// FindJ finds nested nodes given selectors similar to JavaScript querySelectors.
+func FindJ(root *html.Node, joinedSelectors string) []*html.Node {
+	var fns []FindTestFn
+
+	selectors := strings.Split(joinedSelectors, " ")
+
+	for _, s := range selectors {
+		if len(s) == 0 {
+			continue
+		}
+
+		switch s[0] {
+		case '.':
+			fns = append(fns, getClassTestingFn(s[1:]))
+		default:
+			fns = append(fns, getTagTestingFn(s))
+		}
+
+	}
+
+	return FindNested(root, fns)
+}
+
 func getClassTestingFn(class string) FindTestFn {
 	class = strings.ToLower(class)
 
