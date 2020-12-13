@@ -1,7 +1,6 @@
 package ehtml
 
 import (
-	"fmt"
 	"strings"
 
 	"golang.org/x/net/html"
@@ -110,8 +109,6 @@ func getTagTestingFn(tag string) FindTestFn {
 	tag = strings.ToLower(tag)
 
 	return func(n *html.Node) bool {
-		fmt.Println(n.Data)
-
 		if n.Type == html.ElementNode && strings.ToLower(n.Data) == tag {
 			return true
 		}
