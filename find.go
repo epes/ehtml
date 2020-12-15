@@ -62,10 +62,11 @@ func FindJ(root *html.Node, joinedSelectors string) []*html.Node {
 		switch s[0] {
 		case '.':
 			fns = append(fns, getClassTestingFn(s[1:]))
+		case '*':
+			fns = append(fns, textTestingFn)
 		default:
 			fns = append(fns, getTagTestingFn(s))
 		}
-
 	}
 
 	return FindNested(root, fns)
@@ -119,7 +120,6 @@ func getTagTestingFn(tag string) FindTestFn {
 
 // FindTag is sugar for Find for a specific element name.
 func FindTag(root *html.Node, tag string) []*html.Node {
-
 	return Find(root, getTagTestingFn(tag))
 }
 
@@ -134,13 +134,15 @@ func FindTags(root *html.Node, tags []string) []*html.Node {
 	return FindNested(root, fns)
 }
 
+func textTestingFn(n *html.Node) bool {
+	if n.Type == html.TextNode {
+		return true
+	}
+
+	return false
+}
+
 // FindText finds all html.TextNode within the specified root tree.
 func FindText(root *html.Node) []*html.Node {
-	return Find(root, func(n *html.Node) bool {
-		if n.Type == html.TextNode {
-			return true
-		}
-
-		return false
-	})
+	return Find(root, textTestingFn)
 }
