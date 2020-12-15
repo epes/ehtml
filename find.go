@@ -33,13 +33,20 @@ func Find(root *html.Node, fn FindTestFn) []*html.Node {
 // the nodes which satisfy all of them.
 func FindNested(root *html.Node, fns []FindTestFn) []*html.Node {
 	q := newNodeQueue()
-	q.Enqueue(root)
+
+	if root != nil {
+		q.Enqueue(root)
+	}
 
 	for _, fn := range fns {
 		newQ := newNodeQueue()
 
 		for node := q.Dequeue(); node != nil; node = q.Dequeue() {
-			newQ.EnqueueSlice(Find(node, fn))
+			nested := Find(node, fn)
+
+			if nested != nil {
+				newQ.EnqueueSlice(nested)
+			}
 		}
 
 		q = newQ
