@@ -1,6 +1,10 @@
 package ehtml
 
-import "golang.org/x/net/html"
+import (
+	"fmt"
+
+	"golang.org/x/net/html"
+)
 
 type (
 	queue struct {
@@ -69,11 +73,15 @@ func (q *queue) Peek() *html.Node {
 
 // Slice returns the queue as a slice of nodes.
 func (q *queue) Slice() []*html.Node {
-	s := make([]*html.Node, q.Len())
+	s := make([]*html.Node, 0, q.Len())
 
-	for i := 0; i < q.Len(); i++ {
-		s[i] = q.Dequeue()
+	for n := q.start; n != nil; n = n.next {
+		s = append(s, n.value)
 	}
 
 	return s
+}
+
+func (q *queue) String() string {
+	return fmt.Sprintf("%v | %v", q.Len(), q.Slice())
 }

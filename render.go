@@ -10,6 +10,10 @@ import (
 // RenderNodeAsHTML takes an html Node and returns a string
 // representation of the rendered html tree.
 func RenderNodeAsHTML(node *html.Node) string {
+	if node == nil {
+		return ""
+	}
+
 	var buf bytes.Buffer
 	w := io.Writer(&buf)
 	html.Render(w, node)
